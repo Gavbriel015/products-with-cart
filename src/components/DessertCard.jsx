@@ -45,7 +45,7 @@ export default function DessertCard({ image, category, name, price, addToCart, i
     };
 
     return (
-        <div className='flex flex-col items-center max-w-[240px]'>
+        <div className='flex flex-col items-center max-w-[240px] z-1'>
             <div className='relative'>
                 <img className='w-[230px] h-[240px] rounded-xl object-cover' src={image} alt='dessert image' />
                 <div

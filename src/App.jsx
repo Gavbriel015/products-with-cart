@@ -1,13 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import DessertCard from './components/DessertCard';
 import data from './data/data.json';
 
 import EmptyIcon from '/assets/images/illustration-empty-cart.svg';
+import TreeIcon from '/assets/images/icon-carbon-neutral.svg'
 import DessertCart from './components/DessertCart';
+import OrderConfirmed from './components/OrderConfirmed';
 
 function App() {
   const [cart, setCart] = useState([]);
+  const [orderModal, setOrderModal] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  useEffect(() => {
+    const newTotalPrice = cart.reduce((acc, dessert) => {
+      return acc + dessert.price * dessert.quantity;
+    }, 0);
+    setTotalPrice(newTotalPrice);
+  }, [cart]);
+
+  const handleModal = () => {
+    setOrderModal(orderModal => !orderModal);
+  }
+
+  const resetAll = () => {
+    setCart([])
+    handleModal();
+    setTotalPrice(0);
+  }
 
 
   const addToCart = (dessert) => {
@@ -87,7 +108,19 @@ function App() {
                   <DessertCart onDelete={() => handleDelete(item.name)} price={item.price} quantity={item.quantity} name={item.name}/>
                 </div>
               ))}
+              <div className='flex justify-between items-center pt-10'>
+                <p>Total Price</p>
+                <span className='font-bold text-3xl'>${parseFloat(totalPrice).toFixed(2)}</span>
+              </div>
+              <div className='flex items-center pt-4 gap-4 text-sm justify-center'>
+                <img src={TreeIcon} alt="" />
+                <p>This is a <span className='font-bold'>carbon-neutral</span> delivery</p>
+              </div>
+              <button onClick={handleModal} className='bg-[#C23F15] w-full py-3 mt-4 text-white rounded-full' >Confirm Order</button>
+              {orderModal && <OrderConfirmed resetAll={resetAll} totalPrice={totalPrice} onClose={handleModal} cart={cart}/>}
             </div>
+            
+            
           )}
         </div>
       </div>
